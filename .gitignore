@@ -1,0 +1,9 @@
+# patient CT data never goes to git
+*.dcm
+data/ct/
+# big solver outputs
+results/
+*.dat.h5
+*.cas.h5
+__pycache__/
+.DS_Store
