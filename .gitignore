@@ -7,3 +7,9 @@ results/
 *.cas.h5
 __pycache__/
 .DS_Store
+deliverables/
+windows_package/*.zip
+windows_package/tests/*.gz
+windows_package/Case001_Fluent_package/inputs/*.gz
+data/derived*/*.msh
+data/derived*/*.bdf

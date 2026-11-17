@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import fluent_msh as fm
 
-D = os.path.join(HERE, "..", "data", "derived")
+D = os.environ.get("OUTDIR", os.path.join(HERE, "..", "data", "derived"))
 HMAX = float(sys.argv[1]) if len(sys.argv) > 1 else 1.8
 TAG = sys.argv[2] if len(sys.argv) > 2 else "v1"
 
@@ -112,10 +112,12 @@ tri_zone = {tuple(t): z for t, z in zip(np.sort(Fc, 1).tolist(), zone.tolist())}
 # gmsh node ids == our surface vertex ids for the first len(V) nodes? we map by coordinates to be safe
 from scipy.spatial import cKDTree
 tree = cKDTree(X)
-dist, surf2vol = tree.query(V)
+used = np.unique(Fc)
+dist_all, surf2vol_all = tree.query(V)
+dist, surf2vol = dist_all[used], surf2vol_all[used]
 print("surface node match max dist mm", dist.max(), "n>1e-6", int((dist > 1e-6).sum()))
 assert dist.max() < 1e-6, "surface nodes moved"
-vol2surf = -np.ones(len(X), int); vol2surf[surf2vol] = np.arange(len(V))
+vol2surf = -np.ones(len(X), int); vol2surf[surf2vol] = used
 
 
 def zfn(sorted_tris):

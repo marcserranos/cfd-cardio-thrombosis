@@ -9,7 +9,7 @@ import trimesh, pymeshlab
 
 SP = os.environ["SP"]
 SRC = "/Users/marcserrano/UNIVERSITAT/TERCER/MOS/meshmixer/mesh01_clean_remeshed.stl"
-OUT = os.path.join(os.path.dirname(__file__), "..", "data", "derived")
+OUT = os.environ.get("OUTDIR", os.path.join(os.path.dirname(__file__), "..", "data", "derived"))
 os.makedirs(OUT, exist_ok=True)
 TARGET_EDGE = float(sys.argv[1]) if len(sys.argv) > 1 else 1.3  # mm
 
