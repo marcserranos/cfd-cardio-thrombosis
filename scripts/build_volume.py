@@ -125,7 +125,7 @@ def zfn(sorted_tris):
     return np.array([tri_zone.get(tuple(t), -1) for t in s_.tolist()])
 
 
-types = ["wall", "velocity-inlet"] + ["pressure-inlet"] * 4
+types = ["velocity-inlet" if z == "mv" else "pressure-inlet" if z.startswith("pv") else "wall" for z in zone_names]
 msh = f"{D}/LA_Case001_{TAG}.msh"
 info = fm.write_msh(msh, X / 1000.0, T, zone_names, types, zfn)
 print(info)

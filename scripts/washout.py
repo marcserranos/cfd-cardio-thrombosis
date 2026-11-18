@@ -6,13 +6,14 @@ Usage: python washout.py <run_dir> <t_cycle2_start> <n_cycles> <seed_spacing_mm>
 import json, os, sys
 import numpy as np
 import pyvista as pv
+from ens_frames import available_frames
 
 RUN = sys.argv[1]
 T2 = float(sys.argv[2]); NCYC = int(sys.argv[3]); DS = float(sys.argv[4]) / 1000
 POST = os.path.join(RUN, "post"); os.makedirs(POST, exist_ok=True)
 reader = pv.EnSightReader(os.path.join(RUN, "LA_Case001_ens.encas"))
 times = np.array(reader.time_values)
-idx = [i for i, t in enumerate(times) if t > T2 - 1e-9 and os.path.exists(os.path.join(RUN, f"LA_Case001_ens{i + 1:05d}.geo"))]
+idx = [i for i in available_frames(RUN) if times[i] > T2 - 1e-9]
 dt = float(np.median(np.diff(times)))
 print("cycle frames:", len(idx), "dt", dt)
 

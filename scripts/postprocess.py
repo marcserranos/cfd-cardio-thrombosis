@@ -8,6 +8,7 @@ Usage: python postprocess.py <run_dir> [t_cycle2_start]
 import json, os, sys
 import numpy as np
 import pyvista as pv
+from ens_frames import available_frames
 from scipy import ndimage as ndi
 
 RUN = sys.argv[1]
@@ -30,7 +31,7 @@ print("device centre (sim frame, mm):", np.round(dev_c * 1000, 1))
 
 reader = pv.EnSightReader(os.path.join(RUN, "LA_Case001_ens.encas"))
 times = np.array(reader.time_values)
-avail = [i for i, t in enumerate(times) if os.path.exists(os.path.join(RUN, f"LA_Case001_ens{i + 1:05d}.geo"))]
+avail = available_frames(RUN)
 print("frames available:", len(avail), "of", len(times))
 
 

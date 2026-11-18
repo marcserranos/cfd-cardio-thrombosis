@@ -18,7 +18,7 @@ RUN
    - A black window opens and says "Found: ...fluent.exe".
    - Then it says "[1/2] Baseline simulation started". Leave it alone.
    - Fluent works in the background, without its normal window. This is expected.
-   - Run 1 takes roughly 4-8 hours. Run 2 (finer mesh) takes roughly 6-10 hours more. If you need the PC back, you can close it once SEND_TO_MARC_A_baseline.zip exists.
+   - Run 1 takes roughly 3-5 hours. Run 2 (finer mesh) takes roughly 5-8 hours more. If you need the PC back, you can close it once SEND_TO_MARC_A_baseline.zip exists.
    - Do NOT close the black window.
 
 WHEN IT IS DONE (the black window says "ALL DONE")

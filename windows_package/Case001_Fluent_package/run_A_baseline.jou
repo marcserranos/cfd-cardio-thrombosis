@@ -15,12 +15,14 @@
 /define/dynamic-mesh/controls/smoothing? yes
 /define/dynamic-mesh/controls/remeshing? yes
 /define/dynamic-mesh/controls/smoothing-parameters/smoothing-method diffusion
-/define/dynamic-mesh/controls/smoothing-parameters/diffusion-coeff-parameter 2
+/define/dynamic-mesh/controls/smoothing-parameters/diffusion-coeff-parameter 1.5
 /define/dynamic-mesh/controls/remeshing-parameters/length-min 0.0005
 /define/dynamic-mesh/controls/remeshing-parameters/length-max 0.0016
 /define/dynamic-mesh/controls/remeshing-parameters/cell-skew-max 0.9
 /define/dynamic-mesh/zones/create mv rigid-body "mov_bc_c" no no 0 0 0 0 0 0 1 fluid constant 0.0013 no no
-/define/dynamic-mesh/zones/create wall deforming faceted no yes yes yes no yes no yes
+/define/dynamic-mesh/zones/create wall stationary fluid constant 0.0013 no
+/define/dynamic-mesh/zones/create mv_loft stationary fluid constant 0.0013 no
+/define/dynamic-mesh/zones/create mv_tube deforming cylinder 0.013788 -0.000028 -0.000001 0 0 0 1 no yes yes yes yes yes no yes
 /define/dynamic-mesh/zones/create pv_rs stationary fluid constant 0.0013 no
 /define/dynamic-mesh/zones/create pv_ri stationary fluid constant 0.0013 no
 /define/dynamic-mesh/zones/create pv_ls stationary fluid constant 0.0013 no
@@ -32,8 +34,8 @@
 /solve/set/discretization-scheme/mom 1
 /solve/set/discretization-scheme/pressure 12
 /solve/monitors/residual/convergence-criteria 0.005 0.001 0.001 0.001
-/solve/set/transient-controls/time-step-size 0.005
-/file/auto-save/data-frequency 50
+/solve/set/transient-controls/time-step-size 0.01
+/file/auto-save/data-frequency 25
 /file/auto-save/root-name "results_A_baseline/LA_Case001"
 /file/transient-export/ensight-gold-transient
 "results_A_baseline/LA_Case001_ens"
@@ -58,12 +60,12 @@ no
 yes
 "ensight-export"
 "time-step"
-2
+1
 yes
 /solve/initialize/compute-defaults/all-zones
 /solve/initialize/initialize-flow
 /file/write-case "results_A_baseline/LA_Case001_setup.cas.h5"
-/solve/dual-time-iterate 350 100
+/solve/dual-time-iterate 175 100
 /file/write-case-data "results_A_baseline/LA_Case001_final.cas.h5"
 /report/system/time-stats
 /file/stop-transcript
