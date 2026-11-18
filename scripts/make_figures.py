@@ -42,7 +42,7 @@ def velocity_panel(t, fname, title):
                scalar_bar_args=dict(title="|u| (m/s)", vertical=True, height=0.5, position_x=0.85, position_y=0.25))
     seeds = pv.PolyData(sl.points[::40])
     try:
-        st = fl.streamlines_from_source(seeds, vectors="velocity", max_time=0.05, integration_direction="both")
+        st = fl.streamlines_from_source(seeds, vectors="velocity", max_length=0.05, integration_direction="both")
         p.add_mesh(st.tube(radius=0.00012), color="white", opacity=0.6)
     except Exception as e:
         print("streamlines skipped:", e)
@@ -56,14 +56,16 @@ velocity_panel(T_E, "cfd_vel_Epeak.png", "E-wave peak")
 velocity_panel(T_D, "cfd_vel_diastasis.png", "Late diastole / systole")
 
 w = pv.read(os.path.join(POST, "wall_indices_cycle2.vtk"))
-for arr, clim, cmap, fname in [("TAWSS_Pa", [0, 0.6], "viridis", "cfd_tawss.png"), ("ECAP_1_Pa", [0, 10], "inferno", "cfd_ecap.png")]:
+for arr, clim, cmap, fname in [("TAWSS_Pa", [0, 1.5], "viridis", "cfd_tawss.png"), ("ECAP_1_Pa", [0, 1.5], "inferno", "cfd_ecap.png")]:
     p = pv.Plotter(off_screen=True, window_size=(700, 700))
     p.add_mesh(w, scalars=arr, cmap=cmap, clim=clim, smooth_shading=True,
                scalar_bar_args=dict(title=arr.replace("_1_Pa", " (1/Pa)").replace("_Pa", " (Pa)"), vertical=True, height=0.5, position_x=0.85, position_y=0.25))
     ring = w.extract_points(w.point_data["dist_device_mm"] < 12.0, adjacent_cells=False)
     p.add_mesh(ring.extract_feature_edges(boundary_edges=True, feature_edges=False, manifold_edges=False, non_manifold_edges=False), color="cyan", line_width=3)
-    p.camera_position = [tuple(dc + d * 0.15 + np.array([0, 0, 0.03])), tuple(dc), (0, 0, 1)]
-    p.add_text("cycle 2 - device face outlined (cyan)", font_size=10)
+    # we look at the device region from outside the LA, along the LA-centre -> device direction
+    out = dc - w.points.mean(0); out /= np.linalg.norm(out)
+    p.camera_position = [tuple(dc + out * 0.11), tuple(dc), (0, 0, 1)]
+    p.add_text("cycle 2, view onto the occluder (cyan: 12 mm from device)", font_size=9, position="lower_left")
     p.screenshot(os.path.join(FIG, fname))
 
 # time series + washout

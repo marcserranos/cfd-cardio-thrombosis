@@ -52,11 +52,11 @@ with open(os.path.join(OUT, "Case_001_device.stl"), "r+b") as fh:
     fh.write(b"3D Slicer output. SPACE=RAS".ljust(80, b" "))
 
 # ---- 2/3. surface and volume meshes ----
-D = os.path.join(ROOT, "data", "derived")
+D = os.path.join(ROOT, "data", "derived_cyl")  # we use the mesh of the final simulation (MV tube)
 s = np.load(f"{D}/LA_surface_Zaligned_mm_indexed.npz")
 surf = trimesh.Trimesh(s["V"], s["F"], process=False)
 surf.export(os.path.join(OUT, "Case_001_LA_surface.stl"), file_type="stl_ascii")
-shutil.copy(f"{D}/LA_Case001_volume_v1.bdf", os.path.join(OUT, "Case_001_LA_volume.bdf"))
+shutil.copy(f"{D}/LA_Case001_volume_v3.bdf", os.path.join(OUT, "Case_001_LA_volume.bdf"))
 print("written to", OUT)
 for fn in sorted(os.listdir(OUT)):
     print(f"  {fn:28s} {os.path.getsize(os.path.join(OUT, fn)) / 1e6:7.2f} MB")
