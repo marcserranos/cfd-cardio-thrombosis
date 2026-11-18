@@ -21,7 +21,7 @@
 /define/dynamic-mesh/controls/smoothing? yes
 /define/dynamic-mesh/controls/remeshing? yes
 /define/dynamic-mesh/controls/smoothing-parameters/smoothing-method diffusion
-/define/dynamic-mesh/controls/smoothing-parameters/diffusion-coeff-parameter 1.5
+/define/dynamic-mesh/controls/smoothing-parameters/diffusion-coeff-parameter 2
 /define/dynamic-mesh/controls/remeshing-parameters/length-min 0.0005
 /define/dynamic-mesh/controls/remeshing-parameters/length-max 0.0016
 /define/dynamic-mesh/controls/remeshing-parameters/cell-skew-max 0.9
@@ -39,9 +39,9 @@
 /solve/set/discretization-scheme/mom 1
 /solve/set/discretization-scheme/pressure 12
 /solve/monitors/residual/convergence-criteria 0.005 0.001 0.001 0.001
-/solve/set/transient-controls/time-step-size 0.01
+/solve/set/transient-controls/time-step-size 0.005
 ; ---- saving: case+data every 25 steps, EnSight Gold (binary, node values) every step ----
-/file/auto-save/data-frequency 25
+/file/auto-save/data-frequency 50
 /file/auto-save/root-name "@OUT@/LA_Case001"
 /file/transient-export/ensight-gold-transient
 "@OUT@/LA_Case001_ens"
@@ -66,7 +66,7 @@ no
 yes
 "ensight-export"
 "time-step"
-1
+2
 yes
 ; ---- initialise from all zones and run ----
 /solve/initialize/compute-defaults/all-zones
