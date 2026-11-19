@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>Case 1 DRT report</title><style>
 @page { size: A4; margin: 10mm 13mm 10mm 13mm; }
 :root{ --bf:"Charter", "Georgia", serif; --hf:"Helvetica Neue", Helvetica, Arial, sans-serif; --acc:#1a1a1a; }
-body{ font-family:var(--bf); font-size:8.85pt; line-height:1.3; color:#111; margin:0; }
+body{ font-family:var(--bf); font-size:8.75pt; line-height:1.3; color:#111; margin:0; }
 .title{ font-family:var(--hf); font-size:16.5pt; line-height:1.15; font-weight:700; margin:0 0 2mm 0; }
 .author{ font-size:10pt; margin-bottom:0.6mm; } .affil{ font-size:8.3pt; color:#444; margin-bottom:3mm; }
 .abstract{ margin:0 0 2mm 0; text-align:justify; } .kw{ font-size:8pt; color:#444; margin-bottom:3mm; }
@@ -16,93 +16,63 @@ figcaption{ font-style:italic; font-size:8pt; line-height:1.3; margin-top:1mm; t
 h2{font-family:var(--hf);font-weight:700;font-size:10.5pt;border-bottom:0.6pt solid #000;padding-bottom:0.6mm} h3{font-family:var(--hf);font-weight:700;font-size:9pt} .abstract{font-family:var(--hf);font-weight:500;font-size:9pt;line-height:1.38}
 </style></head><body>
 <div class="title">Is there a blood clot on the occluder? Imaging and blood-flow simulation of a left atrial appendage occlusion device (Case 1)</div><div class="author">Marc Serrano Sanz</div><div class="affil">Modelling of Organs and Systems (MOS), Universitat Pompeu Fabra · Individual laboratory report, November 2026</div>
-<div class="abstract"><b>Abstract.</b> Patients with atrial fibrillation (AF) can receive a small umbrella-shaped device that closes the left atrial appendage, the pouch where most clots form. Sometimes a new clot grows on the device itself (device-related thrombus, DRT). We asked whether Case 1 has a DRT. We answered it in two ways: by measuring the cardiac CT directly, and by building a 3D model of the patient's left atrium and simulating two heartbeats of blood flow. <b>The answer is no: the CT shows no clot on the device.</b> The simulation shows why the device still deserves attention: blood near it moves at half the average speed and is renewed three times more slowly than in the rest of the atrium, although the wall indices stay below the usual risk threshold.</div>
+<div class="abstract"><b>Abstract.</b> Patients with atrial fibrillation (AF) can receive a small umbrella-shaped device that closes the left atrial appendage, the pouch where most clots form. Sometimes a new clot grows on the device itself (device-related thrombus, DRT). We asked whether Case 1 has a DRT. We answered it in two ways: by measuring the cardiac CT directly, and by building a 3D model of the patient's left atrium and simulating two heartbeats of blood flow. <b>The answer is no: the CT shows no clot on the device.</b> The simulation explains why the device still deserves attention: next to it, blood moves at half the average speed and is replaced three times more slowly than in the rest of the atrium, although the measures of risk on the wall stay below the usual threshold.</div>
 <div class="cols">
 <h2>1. Introduction</h2>
 <p>In atrial fibrillation the upper chambers of the heart quiver instead of contracting, so blood moves slowly in the left atrium (LA). Most of the
 clots that cause strokes in these patients form in the left atrial appendage (LAA), a small pouch of the LA. When blood thinners cannot be used, the
-LAA can be closed with an occluder (here, a WATCHMAN-type device). In a few percent of patients a thrombus then grows on the atrial face of the device
-(DRT), which increases the risk of stroke<sup>1,2</sup>.</p>
+LAA can be closed with an occluder (here, a WATCHMAN-type device). In a few percent of patients, a clot then grows on the side of the device that faces the atrium. This is called device-related thrombus (DRT), and it raises the risk of stroke<sup>1,2</sup>.</p>
 <p>The question of this report is simple: <b>does Case 1 have a DRT?</b> Medical images are the evidence for this. We also simulated the blood flow,
 because flow explains <i>why</i> a clot may or may not form: clots like slow, stagnant blood<sup>3,4</sup>.</p>
 
-<figure class="wide"><img style="width:80%;margin:0 auto" src="../figures/fig_pipeline.png">
-<figcaption>Figure 1. From image to simulation. (a) CT slice with the left-atrium segmentation (red) and the metal of the occluder (yellow). (b) 3D model:
-mitral valve tube (blue), pulmonary vein inlets (orange) and the device (black). (c) Inside view of the volume mesh (245,471 tetrahedra).
-(d) Simulated blood speed during early filling of the ventricle.</figcaption></figure>
+<figure class="wide"><img style="width:72%;margin:0 auto" src="../figures/fig_pipeline.png">
+<figcaption>Figure 1. From image to simulation: (a) CT slice with the LA outline (red) and the device metal (yellow); (b) 3D model with the mitral valve tube (blue), the vein inlets (orange) and the device (black); (c) inside of the volume mesh; (d) simulated blood speed while the ventricle fills.</figcaption></figure>
 
 <h2>2. Methods</h2>
 <h3>2.1 Images and segmentation</h3>
-<p>We used the contrast cardiac CT of Case 1 (voxels of 0.45 × 0.45 × 0.3 mm). In this CT, blood with contrast appears bright (about 490 HU) and the metal
-of the device very bright (above 700 HU). A clot does not take up contrast, so on CT a DRT appears as a darker layer covering the device, called
-hypo-attenuated thickening (HAT)<sup>5</sup>. We segmented the LA, the four pulmonary veins (PVs) and the mitral annulus in 3D Slicer (192.6 mL),
-and the metal of the device separately (bonus file).</p>
-<p>To look for HAT objectively, we drew 516 short lines perpendicular to the device face, 0.5 mm apart, and measured on each line how much dark tissue
-(below 250 HU) lies between the bright blood and the metal.</p>
+<p>We used the contrast cardiac CT of Case 1, a 3D image with points about half a millimetre apart. In this CT, blood with contrast looks bright (about 490 HU, the CT brightness scale) and the metal of the device looks very bright (above 700 HU). A clot does not take up contrast, so on CT a DRT shows up as a darker layer covering the device, called hypo-attenuated thickening (HAT)<sup>5</sup>. In 3D Slicer we traced the LA, the four pulmonary veins (PVs) and the mitral annulus (192.6 mL in total), and, separately, the metal of the device (bonus file).</p>
+<p>To check for this dark layer with numbers rather than by eye, we drew 516 short lines across the device face, one every 0.5 mm, and measured on each one how much dark tissue (below 250 HU) sits between the bright blood and the metal.</p>
 
 <h3>2.2 3D model and mesh</h3>
-<p>The surface of the LA was cleaned and cut in Meshmixer at the four PVs and at the mitral valve (MV, 597 mm²), and rotated so that the MV faces the −Z axis,
-because the heart motion we impose acts along Z. The MV outline was then extended by a short circular tube (5 mm transition + 10 mm straight).
-The tube lets the valve slide like a piston, which keeps the mesh valid while it moves (see 2.3). Gmsh then filled the volume with 245,471 tetrahedra
-(limit 500,000; worst skewness 0.91).</p>
+<p>We cleaned the LA surface in Meshmixer and cut it where the four PVs and the mitral valve (MV, the opening towards the ventricle, 597 mm²) end. We rotated it so that the MV faces down the Z axis, because the heart motion we apply acts along Z. Below the MV we added a short round tube (5 mm to become round, then 10 mm straight), so that the valve can slide up and down like a piston (see 2.3). Finally, Gmsh filled the inside with 245,471 small tetrahedra (the limit is 500,000; even the worst one is acceptable, skewness 0.91).</p>
 
 <h3>2.3 Blood-flow simulation</h3>
-<p>Ansys Fluent solved the equations of blood flow (laminar, density 1060 kg/m³, viscosity 3.5 mPa·s) every 0.01 s for two heartbeats of 0.875 s.
-We used the course boundary profiles: pressure at the PVs (5–8.5 mmHg), outflow velocity at the MV (one filling wave only, as in AF, peak 0.94 m/s),
-and the up–down motion of the MV plane (8.9 mm). The mesh follows this motion and is rebuilt locally when cells get too distorted.
-Our first two runs, in which the whole atrial wall was allowed to deform, crashed when the valve moved back up, because cells next to the valve were
-squeezed until they turned inside out. With the valve tube and a fixed atrial wall the simulation ran without errors. We analysed only the second beat,
-once the start-up effects had gone.</p>
+<p>Ansys Fluent calculated how the blood moves, one step every 0.01 s, for two heartbeats of 0.875 s each (blood with density 1060 kg/m³ and viscosity 3.5 mPa·s, smooth laminar flow). The inputs were the course profiles: the pressure at the PVs (5–8.5 mmHg), the speed of the blood leaving through the MV (a single filling wave, as in AF, up to 0.94 m/s) and the up-and-down movement of the MV (8.9 mm). The mesh moves with the valve and is rebuilt locally when its cells become too deformed. Our first two attempts, in which the whole atrial wall could deform, stopped with an error when the valve moved back up: the cells next to the valve were squeezed so much that they turned inside out. With the tube and a fixed atrial wall, the simulation ran to the end without errors. We only analysed the second beat, because the first one still carries effects of the start.</p>
 
 <h3>2.4 What we measured</h3>
-<p><b>Speed and washout.</b> Average blood speed in the whole LA and within 10 mm of the device. For washout we released virtual particles everywhere in the LA
-(one every 3 mm) and counted how many were still inside after each beat. <b>Wall indices.</b> The friction of blood on the wall averaged over the beat
-(TAWSS, in Pa) is low where blood is slow. The oscillatory shear index (OSI, 0–0.5) is high where the flow keeps changing direction. ECAP = OSI / TAWSS
-combines both. Values above about 1.4 Pa<sup>−1</sup> have been linked to thrombus formation<sup>6,7</sup>.</p>
+<p><b>Speed and washout.</b> We measured the average blood speed in the whole LA and within 10 mm of the device. For washout, we placed virtual particles all over the LA (one every 3 mm), let the flow carry them, and counted how many were still inside after each beat. <b>Wall indices.</b> TAWSS is the average rubbing force of the blood on the wall during a beat (in Pa); it is low where blood is slow. OSI (from 0 to 0.5) is high where the flow keeps changing direction. ECAP = OSI / TAWSS puts both together: it is high where blood is slow and goes back and forth. Values above about 1.4 Pa<sup>−1</sup> have been linked to clot formation<sup>6,7</sup>.</p>
 
 
 
 <h2>3. Results</h2>
 <h3>3.1 The CT shows no clot on the device</h3>
-<p>On 95 % of the lines the dark layer has zero thickness: bright blood touches the device directly. Only one line in five hundred (0.2 %) shows 3 mm or more,
-at isolated points on the edge of the frame, where metal blurs the image. A true DRT would appear as a continuous dark cap over the hub. The appendage behind
-the device is completely dark, so the device closes it fully (no leak) (Figure 2).</p>
+<p>On 95 % of the lines there is no dark layer at all: the bright blood touches the device directly. Only one line in five hundred (0.2 %) shows 3 mm or more, at single points on the edge of the frame, where the metal blurs the image. A real DRT would look like a continuous dark cap over the centre of the device. The appendage behind the device is completely dark, which means that no blood gets in: the device closes it fully (Figure 2).</p>
 
-<figure class="wide"><img style="width:82%;margin:0 auto" src="../figures/drt_imaging.png">
-<figcaption>Figure 2. CT around the occluder. Left and centre: two long-axis planes through the device (red: LA segmentation). The bright blood touches the
-metal directly, and the appendage behind the device stays dark (no contrast). Third: view of the device face, with the hub and the struts. Right: thickness of
-dark tissue in front of the metal on each of the 516 lines (0 = blood directly on the metal).</figcaption></figure>
+<figure class="wide"><img style="width:74%;margin:0 auto" src="../figures/drt_imaging.png">
+<figcaption>Figure 2. CT around the device. (a, b) Two long-axis planes (red: LA outline): the bright blood touches the metal and the appendage behind stays dark. (c) The device face, with its hub and struts. (d) Thickness of the dark layer in front of the metal on each of the 516 lines (0 = blood directly on the metal).</figcaption></figure>
 
 <h3>3.2 The simulated flow is realistic</h3>
-<p>The two beats are almost identical (peak MV outflow 500 and 514 mL/s), and each beat moves 82 mL, which is a normal value. Inflow and outflow balance once the small volume change of the atrium (190.7–196.1 mL) is counted. During ventricular filling a strong
-jet crosses the atrium towards the valve. Between filling waves a slow rotating flow (vortex) occupies the body of the atrium (Figure 3).</p>
+<p>The two beats are almost the same (the strongest outflow through the MV is 500 and 514 mL/s), and each beat pushes out 82 mL, a normal value. The blood entering through the PVs matches the blood leaving through the MV, once the small change in atrial volume (190.7–196.1 mL) is taken into account. When the ventricle fills, a strong stream crosses the atrium towards the valve. Between filling waves, the blood in the body of the atrium turns slowly in a large swirl, or vortex (Figure 3).</p>
 
-<figure class="wide"><img style="width:80%;margin:0 auto" src="../figures/fig_flow3.png">
+<figure class="wide"><img style="width:72%;margin:0 auto" src="../figures/fig_flow3.png">
 <figcaption>Figure 3. (a, b) Blood speed and streamlines on a plane through the device (black) at the peak of ventricular filling and between filling waves.
 (c) ECAP on the atrial wall over the second beat, seen from outside towards the device; the cyan line encloses the wall within 12 mm of the device.</figcaption></figure>
 
 <h3>3.3 The device sits in a slow region</h3>
-<p>Blood near the device moves at about half the average speed of the atrium (6.8 vs 13.0 cm/s). It is also renewed much more slowly. After three beats
-54 % of the blood that started next to the device is still there, against 19 % for the atrium as a whole (Figures 4 and 5). On the wall around the device the flow
-oscillates more (OSI 0.38 vs 0.29) and ECAP is higher (0.59 vs 0.44 Pa<sup>−1</sup>). However, ECAP stays below 1.4 Pa<sup>−1</sup> at every point of the wall.</p>
+<p>Next to the device, blood moves at about half the average speed of the atrium (6.8 vs 13.0 cm/s), and it is replaced much more slowly: after three beats, 54 % of the blood that started next to the device is still there, compared with 19 % for the atrium as a whole (Figures 4 and 5). On the wall around the device, the flow also changes direction more often (OSI 0.38 vs 0.29) and ECAP is higher (0.59 vs 0.44 Pa<sup>−1</sup>). Still, ECAP stays below 1.4 Pa<sup>−1</sup> everywhere on the wall.</p>
 
-<figure class="col"><img src="../figures/fig_flow_col.png">
+<figure class="col"><img style="width:90%;margin:0 auto" src="../figures/fig_flow_col.png">
 <figcaption>Figure 4. Top: average blood speed in the whole atrium (grey) and next to the device (red) over the two simulated beats. Bottom: share of the blood still
 inside the atrium after it is released, counted beat by beat (washout).</figcaption></figure>
 
-<figure class="col"><img src="../figures/fig_keynumbers_col.png">
-<figcaption>Figure 5. Next to the device (red, within 10–12 mm) versus the whole left atrium (grey, LA), second beat. Slower blood, slower washout and higher
-OSI and ECAP all point the same way, but the size of the effect is moderate.</figcaption></figure>
+<figure class="col"><img style="width:92%;margin:0 auto" src="../figures/fig_keynumbers_col.png">
+<figcaption>Figure 5. Next to the device (red) versus the whole left atrium (grey), second beat. Every measure points the same way, but only moderately.</figcaption></figure>
 
 
 
 <h2>4. Discussion and conclusion</h2>
-<p><b>Answer: there is no device-related thrombus in Case 1.</b> The CT decides it: contrast-filled blood touches the device everywhere and no dark layer covers it.
-The simulation adds context. The occluder sits in the quietest corner of the atrium, where blood is slower, stays longer and rubs the wall in changing
-directions. These are the conditions that favour clotting<sup>1,3,7</sup>, but here they are moderate and no point of the wall
-crosses the ECAP threshold. In plain words: no clot today and a low-to-moderate risk, which supports the usual treatment and the planned follow-up scan.</p>
-<p><b>Limitations.</b> Rigid atrial wall (only the valve moves), generic boundary profiles, blood as a simple fluid, two beats on one mesh, and a single CT
-snapshot. The ECAP threshold comes from aortic aneurysms<sup>6</sup>.</p>
+<p><b>Answer: there is no device-related thrombus in Case 1.</b> The CT is what decides this: the bright, contrast-filled blood touches the device everywhere and no dark layer covers it. The simulation does not change the answer, but it helps to understand the risk. The device sits in the quietest corner of the atrium, where blood moves more slowly, stays longer and pushes on the wall in changing directions. These are the conditions that favour clots<sup>1,3,7</sup>, but here they are only moderate, and no point of the wall reaches the ECAP threshold. In simple terms: there is no clot today and the risk is low to moderate, which supports keeping the usual treatment and the planned follow-up scan.</p>
+<p><b>Limitations.</b> The atrial wall was kept still (only the valve moves), the boundary profiles are general and were not measured in this patient, blood was treated as a simple fluid, we simulated only two beats on one mesh, and the CT is a single picture in time. The ECAP threshold was first defined for aortic aneurysms<sup>6</sup>.</p>
 </div>
 <div class="refs"><h2>References</h2><ol style='padding-left:4.5mm'><li>Dukkipati SR, Kar S, Holmes DR, et al. Device-related thrombus after left atrial appendage closure: incidence, predictors, and outcomes. <i>Circulation</i> <b>138</b>, 874–885 (2018).</li><li>Simard T, Jung RG, Lehenbauer K, et al. Predictors of device-related thrombus following percutaneous left atrial appendage occlusion. <i>Journal of the American College of Cardiology</i> <b>78</b>, 297–313 (2021).</li><li>Mill J, Olivares AL, Arzamendi D, et al. Impact of flow dynamics on device-related thrombosis after left atrial appendage occlusion. <i>Canadian Journal of Cardiology</i> <b>36</b>, 968.e13–968.e14 (2020).</li><li>Aguado AM, Olivares AL, Yagüe C, et al. In silico optimization of left atrial appendage occluder implantation using interactive and modeling tools. <i>Frontiers in Physiology</i> <b>10</b>, 237 (2019).</li><li>Korsholm K, Berti S, Iriart X, et al. Expert recommendations on cardiac computed tomography for planning transcatheter left atrial appendage occlusion. <i>JACC: Cardiovascular Interventions</i> <b>13</b>, 277–292 (2020).</li><li>Di Achille P, Tellides G, Figueroa CA, Humphrey JD. A haemodynamic predictor of intraluminal thrombus formation in abdominal aortic aneurysms. <i>Proceedings of the Royal Society A</i> <b>470</b>, 20140163 (2014).</li><li>Mill J, Agudelo V, Olivares AL, et al. Sensitivity analysis of in silico fluid simulations to predict thrombus formation after left atrial appendage occlusion. <i>Mathematics</i> <b>9</b>, 2304 (2021).</li></ol></div>
 </body></html>
