@@ -44,6 +44,7 @@ v, f, _, _ = measure.marching_cubes(sub, 0.5, spacing=tuple(sp))
 v = v + org + lo * sp  # LPS mm
 v_ras = v * np.array([-1.0, -1.0, 1.0])
 d = trimesh.Trimesh(v_ras, f[:, ::-1], process=True)  # flipping x and y keeps handedness, we reorder for outward normals
+d = max(d.split(only_watertight=False), key=lambda p: len(p.faces))  # we keep only the wireframe, not the tiny CT specks around it
 if d.volume < 0:
     d.invert()
 print("device mesh:", len(d.faces), "tris, extent mm", np.round(d.extents, 1))

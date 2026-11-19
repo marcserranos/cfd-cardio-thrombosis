@@ -68,7 +68,7 @@ because the flow helps explain <i>why</i> a clot may or may not form: clots tend
 <p>Ansys Fluent calculated how the blood moves, one step every 0.01 s, for two heartbeats of 0.875 s each (blood with density 1060 kg/m³ and viscosity 3.5 mPa·s, smooth laminar flow). The inputs were the course profiles: the pressure at the PVs (5–8.5 mmHg), the speed of the blood leaving through the MV (a single filling wave, as in AF, up to 0.94 m/s) and the up-and-down movement of the MV (8.9 mm). The mesh stretches with the valve, and where its little cells get too bent out of shape, Fluent rebuilds them. Our first two attempts, in which the whole atrial wall could deform, stopped with an error when the valve moved back up: the cells next to the valve were squeezed so much that they turned inside out. With the tube and a fixed atrial wall, the simulation ran to the end without errors. We only analysed the second beat, because the first one still carries effects of the start.</p>
 
 <h3>2.4 What we measured</h3>
-<p><b>Speed and washout.</b> We measured the average blood speed in the whole LA and within 10 mm of the device. For washout, we placed virtual particles all over the LA (one every 3 mm), let the flow carry them, and counted how many were still inside after each beat. <b>Wall indices.</b> TAWSS is the average rubbing force of the blood on the wall during a beat (in Pa); it is low where blood is slow. OSI (from 0 to 0.5) is high where the flow keeps changing direction. ECAP = OSI / TAWSS puts both together: it is high where blood is slow and goes back and forth. Values above about 1.4 Pa<sup>−1</sup> have been linked to clot formation [[diachille2014]] [[mill2021]].</p>
+<p><b>Speed and washout.</b> We measured the average blood speed in the whole LA and within 10 mm of the device. For washout, we placed virtual particles all over the LA (one every 3 mm) and let the flow of the second beat carry them, playing that beat three times in a row, since we only simulated two. Then we counted how many were still inside after each beat. <b>Wall indices.</b> TAWSS is the average rubbing force of the blood on the wall during a beat (in Pa); it is low where blood is slow. OSI (from 0 to 0.5) is high where the flow keeps changing direction. ECAP = OSI / TAWSS puts both together: it is high where blood is slow and goes back and forth. Values above about 1.4 Pa<sup>−1</sup> have been linked to clot formation [[diachille2014]] [[mill2021]].</p>
 
 
 
@@ -91,7 +91,7 @@ because the flow helps explain <i>why</i> a clot may or may not form: clots tend
 
 <figure class="col"><img style="width:90%;margin:0 auto" src="../figures/fig_flow_col.png">
 <figcaption>Figure 4. Top: average blood speed in the whole atrium (grey) and next to the device (red) over the two simulated beats. Bottom: share of the blood still
-inside the atrium after it is released, counted beat by beat (washout).</figcaption></figure>
+inside the atrium after it is released, counted beat by beat (washout, with the second beat played three times).</figcaption></figure>
 
 <figure class="col"><img style="width:92%;margin:0 auto" src="../figures/fig_keynumbers_col.png">
 <figcaption>Figure 5. Next to the device (red) versus the whole left atrium (grey), second beat. Every measure points the same way, but only moderately.</figcaption></figure>
