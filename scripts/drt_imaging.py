@@ -10,6 +10,7 @@ import numpy as np
 from scipy import ndimage as ndi
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+plt.rcParams.update({"font.family": "serif", "font.size": 8})
 
 SP = os.environ["SP"]
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -70,20 +71,21 @@ def plane(center, a, b, half=28, step=0.2):
     return s, I, G
 
 
-fig, ax = plt.subplots(1, 4, figsize=(13.5, 3.6))
-for k, (A, B, title) in enumerate([(n, e1, "Long axis (device plane 1)"), (n, e2, "Long axis (device plane 2)"),
-                                    (e1, e2, "En face, at the hub")]):
+fig, ax = plt.subplots(1, 4, figsize=(8, 2.35))
+for k, (A, B, title) in enumerate([(n, e1, "(a) Long axis, plane 1"), (n, e2, "(b) Long axis, plane 2"),
+                                    (e1, e2, "(c) Device face, at the hub")]):
     s, I, G = plane(c, A, B)
     ax[k].imshow(np.clip(I, -150, 800).T, cmap="gray", origin="lower", extent=[s[0], s[-1], s[0], s[-1]])
     ax[k].contour(s, s, G.T, [0.5], colors="#e74c3c", linewidths=0.9)
-    ax[k].set_title(title, fontsize=9)
     ax[k].set_xticks([]); ax[k].set_yticks([])
     if k < 2:
         ax[k].annotate("LA", (-20, 15), color="w", fontsize=9)
-        ax[k].annotate("LAA (no contrast)", (4, -22), color="w", fontsize=8)
+        ax[k].annotate("LAA", (8, -22), color="w", fontsize=8)
 ax[0].plot([-20, -10], [-25, -25], "w-", lw=2); ax[0].annotate("10 mm", (-20, -23.5), color="w", fontsize=7)
 im = ax[3].imshow(thick.T, origin="lower", extent=[-rad, rad, -rad, rad], cmap="magma", vmin=0, vmax=4)
-ax[3].set_title("Low-HU tissue on atrial face (mm)", fontsize=9)
+
 ax[3].set_xlabel("mm"); plt.colorbar(im, ax=ax[3], fraction=0.046)
-plt.tight_layout()
+plt.tight_layout(rect=(0, 0, 1, 0.95))
+for a, t in zip(ax, ["(a) Long axis, plane 1", "(b) Long axis, plane 2", "(c) Device face, at the hub", "(d) Dark layer (mm)"]):
+    b = a.get_position(); fig.text((b.x0 + b.x1) / 2, b.y1 + 0.03, t, ha="center", fontsize=8.5)
 plt.savefig(os.path.join(ROOT, "figures", "drt_imaging.png"), dpi=200)

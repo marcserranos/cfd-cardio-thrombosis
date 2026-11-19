@@ -62,21 +62,22 @@ def crop(img):
     return img[max(r[0] - 5, 0):r[-1] + 5, max(c[0] - 5, 0):c[-1] + 5]
 
 
-img_flow = plt.imread(os.path.join(FIG, "cfd_vel_Epeak.png"))[:, :, :3]
-img_flow = (img_flow * 255).astype(np.uint8)[60:560, 90:690]
+img_flow = (plt.imread(os.path.join(FIG, "cfd_vel_Epeak.png"))[:, :, :3] * 255).astype(np.uint8)
 
 fig, ax = plt.subplots(1, 4, figsize=(7.2, 2.1))
 ax[0].imshow(np.clip(ct_img, -150, 800), cmap="gray", origin="lower")
 ax[0].contour(seg_img, [0.5], colors=ACCENT, linewidths=0.8)
 ax[0].contour(dev_img, [0.5], colors="#f4d35e", linewidths=0.8)
-for a, im in zip(ax[1:], [crop(img_model), crop(img_mesh), img_flow]):
+for a, im in zip(ax[1:], [crop(img_model), crop(img_mesh), crop(img_flow)]):
     a.imshow(im)
-titles = ["(a) CT + segmentation", "(b) 3D model", "(c) volume mesh", "(d) simulated flow"]
-for a, t in zip(ax, titles):
-    a.set_title(t, fontsize=8.5); a.axis("off")
+titles = ["(a) CT and segmentation", "(b) 3D model", "(c) Volume mesh", "(d) Simulated flow"]
+for a in ax:
+    a.axis("off")
 for k in range(3):
     fig.text(0.255 + 0.245 * k, 0.5, "→", fontsize=16, ha="center", va="center", color="#444")
-plt.subplots_adjust(left=0.01, right=0.99, top=0.88, bottom=0.02, wspace=0.18)
+plt.subplots_adjust(left=0.01, right=0.99, top=0.86, bottom=0.02, wspace=0.18)
+for a, t in zip(ax, titles):
+    b = a.get_position(); fig.text((b.x0 + b.x1) / 2, 0.94, t, ha="center", fontsize=8.5)
 plt.savefig(os.path.join(FIG, "fig_pipeline.png"), dpi=300)
 plt.close()
 
@@ -144,7 +145,7 @@ rem = wo["remain"]; tt = rem[:, 0]
 ax[1].plot(tt / 0.875, rem[:, 1] * 100, color=GREY, lw=1.6, label="whole LA")
 ax[1].plot(tt / 0.875, [(te[near] > x).mean() * 100 for x in tt], color=ACCENT, lw=1.6, label="near device")
 ax[1].set_xlabel("heartbeats after release", fontsize=8); ax[1].set_ylabel("left inside (%)", fontsize=8); ax[1].set_ylim(0, 105)
-ax[1].legend(fontsize=7, frameon=False)
+ax[1].text(2.0, 36, "whole LA", color=GREY, fontsize=7.5, ha="center"); ax[1].text(2.0, 75, "near device", color=ACCENT, fontsize=7.5, ha="center")
 for a in ax:
     a.tick_params(labelsize=7.5)
     for side in ["top", "right"]:
@@ -152,3 +153,30 @@ for a in ax:
 plt.tight_layout(h_pad=0.8)
 plt.savefig(os.path.join(FIG, "fig_flow_col.png"), dpi=300)
 print("flow column figure written")
+
+# ---------- Figure 3 composed: two velocity planes + ECAP, shared clean colour bars ----------
+import matplotlib.cm as cm
+from matplotlib.colors import Normalize
+from matplotlib.colorbar import ColorbarBase
+
+
+def crop_white(path):
+    im = np.asarray(Image.open(path).convert("RGB"))
+    m = (im < 245).any(2); r = np.where(m.any(1))[0]; c = np.where(m.any(0))[0]
+    return im[r[0]:r[-1] + 1, c[0]:c[-1] + 1]
+
+
+ims = [crop_white(os.path.join(FIG, f)) for f in ["cfd_vel_Epeak.png", "cfd_vel_diastasis.png", "cfd_ecap.png"]]
+fig = plt.figure(figsize=(7.2, 2.9))
+axs = [fig.add_axes([0.005 + 0.335 * k, 0.27, 0.32, 0.63]) for k in range(3)]
+heads = ["(a) Peak filling, t = 1.31 s", "(b) Between filling waves, t = 1.60 s", "(c) ECAP on the wall, second beat"]
+for a, im, h in zip(axs, ims, heads):
+    a.imshow(im); a.axis("off"); a.set_title(h, fontsize=8.5)
+cax1 = fig.add_axes([0.10, 0.17, 0.47, 0.035])
+ColorbarBase(cax1, cmap=plt.get_cmap("turbo"), norm=Normalize(0, 0.6), orientation="horizontal")
+cax1.set_xlabel("blood speed (m/s)", fontsize=8); cax1.tick_params(labelsize=7)
+cax2 = fig.add_axes([0.70, 0.17, 0.27, 0.035])
+ColorbarBase(cax2, cmap=plt.get_cmap("inferno"), norm=Normalize(0, 1.5), orientation="horizontal")
+cax2.set_xlabel("ECAP (1/Pa)", fontsize=8); cax2.tick_params(labelsize=7)
+plt.savefig(os.path.join(FIG, "fig_flow3.png"), dpi=300)
+print("figure 3 composed")

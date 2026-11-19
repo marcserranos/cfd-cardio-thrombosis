@@ -88,10 +88,7 @@ once the start-up effects had gone.</p>
 (TAWSS, in Pa) is low where blood is slow. The oscillatory shear index (OSI, 0–0.5) is high where the flow keeps changing direction. ECAP = OSI / TAWSS
 combines both. Values above about 1.4 Pa<sup>−1</sup> have been linked to thrombus formation [[diachille2014]] [[mill2021]].</p>
 
-<figure class="wide"><img style="width:82%;margin:0 auto" src="../figures/drt_imaging.png">
-<figcaption>Figure 2. CT around the occluder. Left and centre: two long-axis planes through the device (red: LA segmentation). The bright blood touches the
-metal directly, and the appendage behind the device stays dark (no contrast). Third: view of the device face, with the hub and the struts. Right: thickness of
-dark tissue in front of the metal on each of the 516 lines (0 = blood directly on the metal).</figcaption></figure>
+
 
 <h2>3. Results</h2>
 <h3>3.1 The CT shows no clot on the device</h3>
@@ -99,13 +96,18 @@ dark tissue in front of the metal on each of the 516 lines (0 = blood directly o
 at isolated points on the edge of the frame, where metal blurs the image. A true DRT would appear as a continuous dark cap over the hub. The appendage behind
 the device is completely dark, so the device closes it fully (no leak) (Figure 2).</p>
 
+<figure class="wide"><img style="width:82%;margin:0 auto" src="../figures/drt_imaging.png">
+<figcaption>Figure 2. CT around the occluder. Left and centre: two long-axis planes through the device (red: LA segmentation). The bright blood touches the
+metal directly, and the appendage behind the device stays dark (no contrast). Third: view of the device face, with the hub and the struts. Right: thickness of
+dark tissue in front of the metal on each of the 516 lines (0 = blood directly on the metal).</figcaption></figure>
+
 <h3>3.2 The simulated flow is realistic</h3>
 <p>The two beats are almost identical (peak MV outflow 500 and 514 mL/s), and each beat moves 82 mL, which is a normal value. Inflow and outflow balance once the small volume change of the atrium (190.7–196.1 mL) is counted. During ventricular filling a strong
 jet crosses the atrium towards the valve. Between filling waves a slow rotating flow (vortex) occupies the body of the atrium (Figure 3).</p>
 
-<figure class="wide"><div class="row"><img src="../figures/cfd_vel_Epeak_crop.png"><img src="../figures/cfd_vel_diastasis_crop.png"><img src="../figures/cfd_ecap_crop.png"></div>
-<figcaption>Figure 3. Left and centre: blood speed and streamlines on a plane through the device (black) at the peak of ventricular filling (t = 1.31 s) and between
-filling waves (t = 1.60 s). Right: ECAP on the atrial wall over the second beat, seen from outside towards the device. The cyan line encloses the wall within 12 mm of the device.</figcaption></figure>
+<figure class="wide"><img style="width:80%;margin:0 auto" src="../figures/fig_flow3.png">
+<figcaption>Figure 3. (a, b) Blood speed and streamlines on a plane through the device (black) at the peak of ventricular filling and between filling waves.
+(c) ECAP on the atrial wall over the second beat, seen from outside towards the device; the cyan line encloses the wall within 12 mm of the device.</figcaption></figure>
 
 <h3>3.3 The device sits in a slow region</h3>
 <p>Blood near the device moves at about half the average speed of the atrium (6.8 vs 13.0 cm/s). It is also renewed much more slowly. After three beats
@@ -221,7 +223,7 @@ for name, st in STYLES.items():
     css = CSS % st
     html = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Case 1 DRT report</title><style>{css}</style></head><body>
 <div class="title">{TITLE}</div><div class="author">{AUTHOR}</div><div class="affil">{AFFIL}</div>
-<div class="abstract"><b>Abstract.</b> {abstract}</div><div class="kw"><b>Keywords:</b> {KEYWORDS}</div>
+<div class="abstract"><b>Abstract.</b> {abstract}</div>
 <div class="cols">{body}</div>
 <div class="refs"><h2>References</h2>{ref_list(st['cite'], order)}</div>
 </body></html>"""

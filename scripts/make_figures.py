@@ -36,10 +36,9 @@ def velocity_panel(t, fname, title):
     P, tt = load(t)
     fl = P["fluid"]
     sl = fl.slice(normal=normal, origin=dc)
-    p = pv.Plotter(off_screen=True, window_size=(700, 700))
+    p = pv.Plotter(off_screen=True, window_size=(900, 900)); p.set_background("white")
     p.add_mesh(P["wall"], color="lightgray", opacity=0.12)
-    p.add_mesh(sl, scalars="velocity_magnitude", cmap="turbo", clim=[0, 0.6],
-               scalar_bar_args=dict(title="|u| (m/s)", vertical=True, height=0.5, position_x=0.85, position_y=0.25))
+    p.add_mesh(sl, scalars="velocity_magnitude", cmap="turbo", clim=[0, 0.6], show_scalar_bar=False)
     seeds = pv.PolyData(sl.points[::40])
     try:
         st = fl.streamlines_from_source(seeds, vectors="velocity", max_length=0.05, integration_direction="both")
@@ -48,7 +47,6 @@ def velocity_panel(t, fname, title):
         print("streamlines skipped:", e)
     p.add_points(dev, color="black", point_size=2, render_points_as_spheres=False)
     p.camera_position = [cam["position"], cam["focal_point"], cam["viewup"]]
-    p.add_text(f"{title}  t = {tt:.2f} s", font_size=11)
     p.screenshot(os.path.join(FIG, fname))
 
 
@@ -57,15 +55,13 @@ velocity_panel(T_D, "cfd_vel_diastasis.png", "Late diastole / systole")
 
 w = pv.read(os.path.join(POST, "wall_indices_cycle2.vtk"))
 for arr, clim, cmap, fname in [("TAWSS_Pa", [0, 1.5], "viridis", "cfd_tawss.png"), ("ECAP_1_Pa", [0, 1.5], "inferno", "cfd_ecap.png")]:
-    p = pv.Plotter(off_screen=True, window_size=(700, 700))
-    p.add_mesh(w, scalars=arr, cmap=cmap, clim=clim, smooth_shading=True,
-               scalar_bar_args=dict(title=arr.replace("_1_Pa", " (1/Pa)").replace("_Pa", " (Pa)"), vertical=True, height=0.5, position_x=0.85, position_y=0.25))
+    p = pv.Plotter(off_screen=True, window_size=(900, 900)); p.set_background("white")
+    p.add_mesh(w, scalars=arr, cmap=cmap, clim=clim, smooth_shading=True, show_scalar_bar=False)
     ring = w.extract_points(w.point_data["dist_device_mm"] < 12.0, adjacent_cells=False)
-    p.add_mesh(ring.extract_feature_edges(boundary_edges=True, feature_edges=False, manifold_edges=False, non_manifold_edges=False), color="cyan", line_width=3)
+    p.add_mesh(ring.extract_feature_edges(boundary_edges=True, feature_edges=False, manifold_edges=False, non_manifold_edges=False), color="#00e5ff", line_width=6)
     # we look at the device region from outside the LA, along the LA-centre -> device direction
     out = dc - w.points.mean(0); out /= np.linalg.norm(out)
-    p.camera_position = [tuple(dc + out * 0.11), tuple(dc), (0, 0, 1)]
-    p.add_text("cycle 2, view onto the occluder (cyan: 12 mm from device)", font_size=9, position="lower_left")
+    p.camera_position = [tuple(dc + out * 0.135), tuple(dc), (0, 0, 1)]
     p.screenshot(os.path.join(FIG, fname))
 
 # time series + washout
