@@ -1,15 +1,18 @@
-# patient CT data never goes to git
+# patient CT data and everything derived from it never goes to git
 *.dcm
 data/ct/
-# big solver outputs
+data/meshmixer/
+data/derived*/
+# big solver outputs and hand-in files
 results/
+deliverables/
 *.dat.h5
 *.cas.h5
+*.msh
+*.msh.gz
+*.bdf
+# generated paper variants (the final PDF is report/Case1_DRT_report.pdf)
+report/paper_*
 __pycache__/
 .DS_Store
-deliverables/
-windows_package/*.zip
-windows_package/tests/*.gz
-windows_package/Case001_Fluent_package/inputs/*.gz
-data/derived*/*.msh
-data/derived*/*.bdf
+*_crop.png

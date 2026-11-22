@@ -1,7 +1,7 @@
 """We load the Case 1 CT from DICOM into a numpy volume in LPS millimetre space."""
-import glob, numpy as np, pydicom
+import glob, os, numpy as np, pydicom
 
-CT_DIR = "/private/tmp/claude-501/-Users-marcserrano--claude-spares-spare-KkTJPb/bced2654-ca10-4913-b69b-beeb349c481a/scratchpad/in/Case_001"
+CT_DIR = os.environ.get("CT_DIR", "data/ct/Case_001")  # the course CT case is not redistributed, so we point to it here
 
 
 def load_ct(ct_dir=CT_DIR):
